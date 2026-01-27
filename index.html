@@ -46,6 +46,10 @@
                     <span class="icon">⚙️</span>
                     <span>الإعدادات</span>
                 </a>
+                <a href="#" class="nav-item" data-page="dynamiccontent">
+                    <span class="icon">🎨</span>
+                    <span>المحتوى الديناميكي</span>
+                </a>
             </nav>
             <div class="sidebar-footer">
                 <button class="btn-save" onclick="saveConfig()">💾 حفظ التغييرات</button>
@@ -281,6 +285,33 @@
                     <div class="form-group">
                         <label>البريد الإلكتروني للدعم</label>
                         <input type="email" id="support-email" placeholder="support@example.com">
+                    </div>
+                </div>
+            </section>
+
+            <!-- المحتوى الديناميكي -->
+            <section class="page" id="page-dynamiccontent">
+                <div class="page-header">
+                    <h1>🎨 المحتوى الديناميكي</h1>
+                    <p>تحرير المحتوى الذي يظهر في التطبيق مباشرة</p>
+                </div>
+                <div class="card">
+                    <div class="list-header">
+                        <h3>معاينة المحتوى</h3>
+                        <a href="dynamic_content.html" target="_blank" class="btn-add">↗️ فتح في نافذة جديدة</a>
+                    </div>
+                    <div
+                        style="background:#0d0d15; border-radius:16px; overflow:hidden; margin-top:16px; border: 1px solid var(--border-color);">
+                        <iframe src="dynamic_content.html" style="width:100%; height:500px; border:none;"></iframe>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>📝 تعديل الكود</h3>
+                    <p style="color:#888; margin-bottom:16px;">لتعديل المحتوى، عدّل ملف
+                        <code>dynamic_content.html</code> وارفعه لـ GitHub</p>
+                    <div class="action-buttons">
+                        <a href="https://github.com/zrtbytbt-ux/nnn999/edit/main/dynamic_content.html" target="_blank"
+                            class="action-btn">✏️ تعديل على GitHub</a>
                     </div>
                 </div>
             </section>
