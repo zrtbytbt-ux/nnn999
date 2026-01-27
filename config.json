@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "lastUpdated": "2026-01-27T16:40:00Z",
+    "lastUpdated": "2026-01-27T18:10:00Z",
     "app": {
         "name": "أوقاتي",
         "minVersion": "1.0.0",
@@ -39,6 +39,62 @@
             "route": "/qibla",
             "enabled": true,
             "order": 2
+        }
+    ],
+    "homeBanners": [
+        {
+            "id": "welcome",
+            "title": "🎉 مرحباً بك في أوقاتي!",
+            "subtitle": "تطبيقك الإسلامي الشامل",
+            "gradientStart": "#DC143C",
+            "gradientEnd": "#FF6B6B",
+            "icon": "🕌",
+            "enabled": true,
+            "order": 1
+        }
+    ],
+    "homeButtons": [
+        {
+            "id": "btn1",
+            "title": "📖 أذكار الصباح",
+            "subtitle": "ابدأ يومك بذكر الله",
+            "icon": "☀️",
+            "color": "#FFD700",
+            "action": "adhkar_morning",
+            "enabled": true,
+            "order": 1
+        },
+        {
+            "id": "btn2",
+            "title": "🌙 أذكار المساء",
+            "subtitle": "اختم يومك بالطمأنينة",
+            "icon": "🌙",
+            "color": "#9B59B6",
+            "action": "adhkar_evening",
+            "enabled": true,
+            "order": 2
+        },
+        {
+            "id": "btn3",
+            "title": "🎯 تحدي اليوم",
+            "subtitle": "أكمل 100 تسبيحة",
+            "icon": "🏆",
+            "color": "#00D4FF",
+            "action": "daily_challenge",
+            "enabled": true,
+            "order": 3
+        }
+    ],
+    "homeCards": [
+        {
+            "id": "card1",
+            "type": "quote",
+            "title": "حكمة اليوم",
+            "content": "إن مع العسر يسرا",
+            "icon": "💎",
+            "backgroundColor": "#1a1a2e",
+            "borderColor": "#DC143C",
+            "enabled": true
         }
     ],
     "announcements": [],

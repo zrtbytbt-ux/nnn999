@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>أوقاتي - المحتوى الديناميكي</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: transparent;
+            color: #fff;
+            padding: 16px;
+            min-height: 100vh;
+        }
+
+        /* البانر الترحيبي */
+        .banner {
+            background: linear-gradient(135deg, #DC143C, #FF6B6B);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.3);
+        }
+
+        .banner-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .banner-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .banner-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* الأزرار */
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            background: rgba(26, 26, 46, 0.95);
+            border-radius: 16px;
+            padding: 20px 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .btn-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .btn-subtitle {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        /* بطاقة الحكمة */
+        .quote-card {
+            background: rgba(26, 26, 46, 0.95);
+            border-radius: 16px;
+            padding: 20px;
+            border-right: 4px solid #DC143C;
+            margin-bottom: 20px;
+        }
+
+        .quote-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .quote-icon {
+            font-size: 24px;
+        }
+
+        .quote-label {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .quote-text {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        /* إعلان خاص */
+        .promo-card {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            color: #000;
+        }
+
+        .promo-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .promo-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .promo-text {
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- البانر الترحيبي -->
+    <div class="banner">
+        <div class="banner-icon">🕌</div>
+        <div class="banner-title">🎉 مرحباً بك في أوقاتي!</div>
+        <div class="banner-subtitle">تطبيقك الإسلامي الشامل</div>
+    </div>
+
+    <!-- أزرار سريعة -->
+    <div class="buttons-grid">
+        <div class="action-btn" onclick="handleAction('adhkar_morning')">
+            <div class="btn-icon">☀️</div>
+            <div class="btn-title">أذكار الصباح</div>
+            <div class="btn-subtitle">ابدأ يومك بذكر الله</div>
+        </div>
+        <div class="action-btn" onclick="handleAction('adhkar_evening')">
+            <div class="btn-icon">🌙</div>
+            <div class="btn-title">أذكار المساء</div>
+            <div class="btn-subtitle">اختم يومك بالطمأنينة</div>
+        </div>
+        <div class="action-btn" onclick="handleAction('tasbih')">
+            <div class="btn-icon">📿</div>
+            <div class="btn-title">المسبحة</div>
+            <div class="btn-subtitle">سبّح واستغفر</div>
+        </div>
+        <div class="action-btn" onclick="handleAction('quran')">
+            <div class="btn-icon">📖</div>
+            <div class="btn-title">القرآن الكريم</div>
+            <div class="btn-subtitle">تلاوة وتدبر</div>
+        </div>
+    </div>
+
+    <!-- حكمة اليوم -->
+    <div class="quote-card">
+        <div class="quote-header">
+            <span class="quote-icon">💎</span>
+            <span class="quote-label">حكمة اليوم</span>
+        </div>
+        <div class="quote-text">إن مع العسر يسرا</div>
+    </div>
+
+    <!-- إعلان خاص -->
+    <div class="promo-card">
+        <div class="promo-icon">🎁</div>
+        <div class="promo-title">تحدي اليوم!</div>
+        <div class="promo-text">أكمل 100 تسبيحة واحصل على مكافأة</div>
+    </div>
+
+    <script>
+        // التواصل مع التطبيق
+        function handleAction(action) {
+            // إرسال الإجراء للتطبيق
+            if (window.flutter_inappwebview) {
+                window.flutter_inappwebview.callHandler('onAction', action);
+            } else if (window.FlutterChannel) {
+                window.FlutterChannel.postMessage(action);
+            } else {
+                console.log('Action:', action);
+            }
+        }
+    </script>
+</body>
+
+</html>
