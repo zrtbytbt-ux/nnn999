@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم أوقاتي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🕌</span>
+                <h1>لوحة تحكم أوقاتي</h1>
+            </div>
+            <div class="status" id="status">
+                <span class="status-dot"></span>
+                <span class="status-text">متصل</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- App Info Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>⚙️ معلومات التطبيق</h2>
+                    <button class="btn-save" onclick="saveConfig()">💾 حفظ التغييرات</button>
+                </div>
+                <div class="card-body">
+                    <!-- App Name -->
+                    <div class="form-group">
+                        <label for="appName">اسم التطبيق</label>
+                        <input type="text" id="appName" class="input" placeholder="أوقاتي">
+                    </div>
+
+                    <!-- App Version -->
+                    <div class="form-group">
+                        <label for="appVersion">إصدار التطبيق</label>
+                        <input type="text" id="appVersion" class="input" placeholder="1.0.0">
+                    </div>
+
+                    <!-- App Logo -->
+                    <div class="form-group">
+                        <label for="appLogo">رابط صورة التطبيق (Logo URL)</label>
+                        <input type="url" id="appLogo" class="input" placeholder="https://example.com/logo.png">
+                        <small class="hint">الحجم الموصى به: 512x512 بكسل</small>
+                    </div>
+
+                    <!-- Logo Preview -->
+                    <div class="logo-preview">
+                        <p>معاينة الشعار:</p>
+                        <img id="logoPreview" src="https://via.placeholder.com/512x512.png?text=أوقاتي"
+                            alt="Logo Preview">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Settings Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>🔧 إعدادات متقدمة</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Maintenance Mode -->
+                    <div class="toggle-group">
+                        <div class="toggle-info">
+                            <span class="toggle-title">🔧 وضع الصيانة</span>
+                            <small>تعطيل التطبيق مؤقتاً لجميع المستخدمين</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="maintenanceMode">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Force Update -->
+                    <div class="toggle-group">
+                        <div class="toggle-info">
+                            <span class="toggle-title">🔄 إجبار التحديث</span>
+                            <small>إجبار المستخدمين على تحديث التطبيق</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="forceUpdate">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Min Version -->
+                    <div class="form-group">
+                        <label for="minVersion">الحد الأدنى للإصدار المطلوب</label>
+                        <input type="text" id="minVersion" class="input" placeholder="1.0.0">
+                        <small class="hint">المستخدمون الذين لديهم إصدار أقل سيُطلب منهم التحديث</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Preview Card -->
+            <div class="card preview-card">
+                <div class="card-header">
+                    <h2>📱 معاينة مباشرة</h2>
+                </div>
+                <div class="card-body">
+                    <div class="phone-preview">
+                        <div class="phone-screen">
+                            <img id="previewLogo" src="https://via.placeholder.com/512x512.png?text=أوقاتي"
+                                alt="App Logo">
+                            <h3 id="previewName">أوقاتي</h3>
+                            <p id="previewVersion">الإصدار: 1.0.0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>آخر تحديث: <span id="lastUpdate">--</span></p>
+            <p>جميع الحقوق محفوظة © 2026 أوقاتي</p>
+        </footer>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
