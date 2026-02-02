@@ -1,11 +1,6 @@
 {
-<<<<<<< HEAD
   "voiceRooms": true,
   "tribes": true,
-=======
-  "voiceRooms": false,
-  "tribes": false,
->>>>>>> df35732a2afca86eb99cd04a93181775966f96be
   "adhkar": true,
   "quizzes": true
 }
