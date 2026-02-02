@@ -3,21 +3,32 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 
 class RemoteFeatureControl {
-  // رابط ملف JSON المباشر من GitHub (بدون Netlify!)
+  // استخدام GitHub API بدلاً من raw (لتجنب مشكلة الـ cache)
   static const String featuresUrl =
-      'https://raw.githubusercontent.com/zrtbytbt-ux/nnn999/main/public/features.json';
+      'https://api.github.com/repos/zrtbytbt-ux/nnn999/contents/public/features.json';
 
-  /// قراءة حالة الأقسام من GitHub
+  /// قراءة حالة الأقسام من GitHub API
   static Future<Map<String, bool>> getFeatures() async {
     try {
       final response = await http.get(
         Uri.parse(featuresUrl),
-        headers: {'Cache-Control': 'no-cache'},
+        headers: {
+          'Accept': 'application/vnd.github.v3+json',
+          'Cache-Control': 'no-cache',
+        },
       );
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        return Map<String, bool>.from(data);
+        final Map<String, dynamic> apiResponse = jsonDecode(response.body);
+
+        // GitHub API يرجع الملف مشفر بـ base64
+        final String content = apiResponse['content'];
+        final String decodedContent = utf8.decode(
+          base64.decode(content.replaceAll('\n', '')),
+        );
+
+        final Map<String, dynamic> features = jsonDecode(decodedContent);
+        return Map<String, bool>.from(features);
       } else {
         if (kDebugMode) {
           debugPrint('خطأ في قراءة الأقسام: ${response.statusCode}');
@@ -48,3 +59,30 @@ class RemoteFeatureControl {
     };
   }
 }
+
+// ═══════════════════════════════════════════════════════
+// مثال الاستخدام (نفس الشيء - لا تغيير!)
+// ═══════════════════════════════════════════════════════
+
+/*
+
+import 'services/remote_feature_control.dart';
+
+// في أي مكان في التطبيق:
+final features = await RemoteFeatureControl.getFeatures();
+
+if (features['voiceRooms'] == true) {
+  // أظهر الغرف الصوتية
+}
+
+if (features['tribes'] == false) {
+  // أخف القبائل
+}
+
+// أو استخدام مباشر:
+final isEnabled = await RemoteFeatureControl.isFeatureEnabled('voiceRooms');
+if (!isEnabled) {
+  // القسم معطّل
+}
+
+*/
