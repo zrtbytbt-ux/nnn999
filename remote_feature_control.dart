@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 class RemoteFeatureControl {
-  // استبدل هذا بالرابط الخاص بك على Netlify
-  static const String baseUrl = 'https://YOUR-SITE.netlify.app';
+  // رابط السيرفر على Netlify
+  static const String baseUrl = 'https://cccxxxzzssee.netlify.app';
 
   /// قراءة حالة الأقسام من السيرفر
   static Future<Map<String, bool>> getFeatures() async {
