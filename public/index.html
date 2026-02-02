@@ -233,23 +233,8 @@
 
 <body>
     <div class="container">
-        <!-- Login Section -->
-        <div class="login-section active" id="loginSection">
-            <h1>🔐 تسجيل الدخول</h1>
-            <p class="subtitle">أدخل كلمة السر للوصول إلى لوحة التحكم</p>
-
-            <div class="message" id="loginMessage"></div>
-
-            <div class="input-group">
-                <label for="password">كلمة السر</label>
-                <input type="password" id="password" placeholder="أدخل كلمة السر">
-            </div>
-
-            <button onclick="login()">دخول</button>
-        </div>
-
-        <!-- Control Section -->
-        <div class="control-section" id="controlSection">
+        <!-- Control Section - مباشرة بدون تسجيل دخول -->
+        <div class="control-section active" id="controlSection">
             <h1>⚙️ إدارة أقسام التطبيق</h1>
             <p class="subtitle">تفعيل أو إيقاف الأقسام من هنا</p>
 
@@ -258,7 +243,6 @@
             <div id="featuresContainer"></div>
 
             <button class="save-btn" onclick="saveChanges()">💾 حفظ التغييرات</button>
-            <button class="logout-btn" onclick="logout()">خروج</button>
 
             <div class="last-update" id="lastUpdate"></div>
         </div>
@@ -275,34 +259,11 @@
             quizzes: { name: 'الاختبارات', desc: 'الاختبارات والمسابقات' }
         };
 
-        async function login() {
-            const password = document.getElementById('password').value;
-            const message = document.getElementById('loginMessage');
 
-            if (!password) {
-                showMessage(message, 'الرجاء إدخال كلمة السر', 'error');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/update-features', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password, features: {} })
-                });
-
-                if (response.ok) {
-                    currentPassword = password;
-                    await loadFeatures();
-                    document.getElementById('loginSection').classList.remove('active');
-                    document.getElementById('controlSection').classList.add('active');
-                } else {
-                    showMessage(message, 'كلمة السر غير صحيحة', 'error');
-                }
-            } catch (error) {
-                showMessage(message, 'خطأ في الاتصال بالسيرفر', 'error');
-            }
-        }
+        // Load features automatically on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadFeatures();
+        });
 
         async function loadFeatures() {
             try {
@@ -387,18 +348,6 @@
                 element.classList.remove('show');
             }, 3000);
         }
-
-        function logout() {
-            currentPassword = '';
-            document.getElementById('password').value = '';
-            document.getElementById('controlSection').classList.remove('active');
-            document.getElementById('loginSection').classList.add('active');
-        }
-
-        // Allow Enter key to login
-        document.getElementById('password').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') login();
-        });
     </script>
 </body>
 
