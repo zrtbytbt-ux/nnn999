@@ -1,5 +1,5 @@
 {
-    "voiceRooms": true,
+    "voiceRooms": false,
     "tribes": true,
     "adhkar": true,
     "quizzes": true
