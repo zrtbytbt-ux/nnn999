@@ -267,6 +267,22 @@
 
         async function loadFeatures() {
             try {
+                // Try to load from localStorage first
+                const savedData = localStorage.getItem('appFeatures');
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    features = data.features;
+
+                    if (data.lastUpdated) {
+                        document.getElementById('lastUpdate').textContent =
+                            'آخر تحديث: ' + new Date(data.lastUpdated).toLocaleString('ar');
+                    }
+
+                    renderFeatures();
+                    return;
+                }
+
+                // Fallback to API if no localStorage data
                 const response = await fetch('/api/get-features');
                 const data = await response.json();
                 features = data.features;
@@ -319,25 +335,22 @@
             const message = document.getElementById('controlMessage');
 
             try {
-                const response = await fetch('/api/update-features', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        password: currentPassword,
-                        features
-                    })
-                });
+                // Save to localStorage
+                const configData = {
+                    features,
+                    lastUpdated: new Date().toISOString()
+                };
 
-                const data = await response.json();
+                localStorage.setItem('appFeatures', JSON.stringify(configData));
 
-                if (response.ok) {
-                    showMessage(message, '✓ تم حفظ التغييرات بنجاح!', 'success');
-                    await loadFeatures();
-                } else {
-                    showMessage(message, data.error || 'فشل حفظ التغييرات', 'error');
-                }
+                showMessage(message, '✓ تم حفظ التغييرات بنجاح!', 'success');
+
+                // Update last updated display
+                document.getElementById('lastUpdate').textContent =
+                    'آخر تحديث: ' + new Date().toLocaleString('ar');
+
             } catch (error) {
-                showMessage(message, 'خطأ في الاتصال بالسيرفر', 'error');
+                showMessage(message, 'خطأ في حفظ التغييرات', 'error');
             }
         }
 
