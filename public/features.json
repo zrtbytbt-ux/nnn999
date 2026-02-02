@@ -1,6 +1,6 @@
 {
-    "voiceRooms": true,
-    "tribes": true,
-    "adhkar": true,
-    "quizzes": true
+    "voiceRooms": false,
+    "tribes": false,
+    "adhkar": false,
+    "quizzes": false
 }
