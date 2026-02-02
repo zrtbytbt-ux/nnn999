@@ -1,24 +1,18 @@
-// Uses GitHub Gist as a simple database
-// Set GITHUB_TOKEN and GIST_ID in Netlify environment variables
-
 const https = require('https');
 
-function makeRequest(options, data = null) {
+function fetchJson(url) {
     return new Promise((resolve, reject) => {
-        const req = https.request(options, (res) => {
+        https.get(url, (res) => {
             let body = '';
             res.on('data', chunk => body += chunk);
             res.on('end', () => {
                 try {
-                    resolve({ status: res.statusCode, data: JSON.parse(body) });
+                    resolve(JSON.parse(body));
                 } catch (e) {
-                    resolve({ status: res.statusCode, data: body });
+                    reject(e);
                 }
             });
-        });
-        req.on('error', reject);
-        if (data) req.write(JSON.stringify(data));
-        req.end();
+        }).on('error', reject);
     });
 }
 
@@ -34,12 +28,7 @@ exports.handler = async (event, context) => {
     }
 
     try {
-        const fs = require('fs');
-        const path = require('path');
-
-        // Try to read features.json from public folder
-        const featuresPath = path.join(__dirname, '..', '..', 'public', 'features.json');
-
+        // Default features
         let features = {
             voiceRooms: true,
             tribes: true,
@@ -47,13 +36,12 @@ exports.handler = async (event, context) => {
             quizzes: true
         };
 
+        // Try to fetch from public features.json
         try {
-            if (fs.existsSync(featuresPath)) {
-                const fileContent = fs.readFileSync(featuresPath, 'utf8');
-                features = JSON.parse(fileContent);
-            }
-        } catch (readError) {
-            console.log('Using default features:', readError.message);
+            const publicUrl = `https://${event.headers.host}/features.json`;
+            features = await fetchJson(publicUrl);
+        } catch (fetchError) {
+            console.log('Using default features:', fetchError.message);
         }
 
         return {
@@ -62,15 +50,25 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({
                 features,
                 lastUpdated: new Date().toISOString(),
-                source: 'features-json'
+                source: 'cdn'
             })
         };
 
     } catch (error) {
+        // Fallback to defaults
         return {
-            statusCode: 500,
+            statusCode: 200,
             headers,
-            body: JSON.stringify({ error: 'Failed to fetch config', details: error.message })
+            body: JSON.stringify({
+                features: {
+                    voiceRooms: true,
+                    tribes: true,
+                    adhkar: true,
+                    quizzes: true
+                },
+                lastUpdated: new Date().toISOString(),
+                source: 'default'
+            })
         };
     }
 };
