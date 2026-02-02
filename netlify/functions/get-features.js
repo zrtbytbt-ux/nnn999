@@ -34,67 +34,35 @@ exports.handler = async (event, context) => {
     }
 
     try {
-        const githubToken = process.env.GITHUB_TOKEN;
-        const gistId = process.env.GIST_ID;
+        const fs = require('fs');
+        const path = require('path');
 
-        if (!githubToken || !gistId) {
-            // Fallback to default values if GitHub not configured
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({
-                    features: {
-                        voiceRooms: true,
-                        tribes: true,
-                        adhkar: true,
-                        quizzes: true
-                    },
-                    lastUpdated: new Date().toISOString(),
-                    source: 'default'
-                })
-            };
-        }
+        // Try to read features.json from public folder
+        const featuresPath = path.join(__dirname, '..', '..', 'public', 'features.json');
 
-        // Fetch from GitHub Gist
-        const options = {
-            hostname: 'api.github.com',
-            path: `/gists/${gistId}`,
-            method: 'GET',
-            headers: {
-                'User-Agent': 'Netlify-Function',
-                'Authorization': `token ${githubToken}`,
-                'Accept': 'application/vnd.github.v3+json'
-            }
+        let features = {
+            voiceRooms: true,
+            tribes: true,
+            adhkar: true,
+            quizzes: true
         };
 
-        const response = await makeRequest(options);
-
-        if (response.status === 200) {
-            const configFile = response.data.files['config.json'];
-            if (configFile && configFile.content) {
-                const config = JSON.parse(configFile.content);
-                const { password, ...publicData } = config;
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify(Object.assign({}, publicData, { source: 'github-gist' }))
-                };
+        try {
+            if (fs.existsSync(featuresPath)) {
+                const fileContent = fs.readFileSync(featuresPath, 'utf8');
+                features = JSON.parse(fileContent);
             }
+        } catch (readError) {
+            console.log('Using default features:', readError.message);
         }
 
-        // Fallback
         return {
             statusCode: 200,
             headers,
             body: JSON.stringify({
-                features: {
-                    voiceRooms: true,
-                    tribes: true,
-                    adhkar: true,
-                    quizzes: true
-                },
+                features,
                 lastUpdated: new Date().toISOString(),
-                source: 'fallback'
+                source: 'features-json'
             })
         };
 

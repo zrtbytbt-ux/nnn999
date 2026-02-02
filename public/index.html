@@ -335,7 +335,7 @@
             const message = document.getElementById('controlMessage');
 
             try {
-                // Save to localStorage
+                // Save to localStorage for this browser
                 const configData = {
                     features,
                     lastUpdated: new Date().toISOString()
@@ -343,7 +343,37 @@
 
                 localStorage.setItem('appFeatures', JSON.stringify(configData));
 
-                showMessage(message, '✓ تم حفظ التغييرات بنجاح!', 'success');
+                // Create downloadable JSON file
+                const jsonContent = JSON.stringify(features, null, 2);
+                const blob = new Blob([jsonContent], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+
+                // Create download link
+                const downloadLink = document.createElement('a');
+                downloadLink.href = url;
+                downloadLink.download = 'features.json';
+                downloadLink.style.display = 'none';
+                document.body.appendChild(downloadLink);
+
+                // Show instructions
+                const instructions = `
+✅ تم حفظ التغييرات في المتصفح!
+
+لتطبيق التغييرات على التطبيق:
+1. سيتم تنزيل ملف features.json
+2. ارفعه يدوياً لمجلد public في GitHub
+3. أو أرسله لي وسأرفعه
+
+الملف جاهز للتنزيل...`;
+
+                if (confirm(instructions + '\n\nتنزيل الملف الآن؟')) {
+                    downloadLink.click();
+                }
+
+                document.body.removeChild(downloadLink);
+                URL.revokeObjectURL(url);
+
+                showMessage(message, '✓ تم! راجع التعليمات أعلاه', 'success');
 
                 // Update last updated display
                 document.getElementById('lastUpdate').textContent =
