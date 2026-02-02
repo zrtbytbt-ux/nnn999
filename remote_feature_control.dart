@@ -1,31 +1,41 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 
 class RemoteFeatureControl {
-  // رابط السيرفر على Netlify
-  static const String baseUrl = 'https://cccxxxzzssee.netlify.app';
+  // رابط ملف JSON المباشر على Netlify
+  static const String featuresUrl =
+      'https://cccxxxzzssee.netlify.app/features.json';
 
   /// قراءة حالة الأقسام من السيرفر
   static Future<Map<String, bool>> getFeatures() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/api/get-features'));
+      final response = await http.get(
+        Uri.parse(featuresUrl),
+        headers: {'Cache-Control': 'no-cache'}, // منع التخزين المؤقت
+      );
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return Map<String, bool>.from(data['features']);
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return Map<String, bool>.from(data);
       } else {
         if (kDebugMode) {
-          debugPrint('Error fetching features: ${response.statusCode}');
+          debugPrint('خطأ في قراءة الأقسام: ${response.statusCode}');
         }
         return _getDefaultFeatures();
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('Error fetching features: $e');
+        debugPrint('خطأ في الاتصال بالسيرفر: $e');
       }
       return _getDefaultFeatures();
     }
+  }
+
+  /// التحقق من حالة قسم معين
+  static Future<bool> isFeatureEnabled(String featureName) async {
+    final features = await getFeatures();
+    return features[featureName] ?? true; // افتراضياً مفعّل
   }
 
   /// القيم الافتراضية في حالة فشل الاتصال
@@ -37,104 +47,92 @@ class RemoteFeatureControl {
       'quizzes': true,
     };
   }
-
-  /// فحص إذا كان قسم معين مفعّل
-  static Future<bool> isFeatureEnabled(String featureName) async {
-    final features = await getFeatures();
-    return features[featureName] ?? true; // افتراضياً مفعّل
-  }
 }
 
-// ============================================
-// 📝 مثال على الاستخدام في التطبيق:
-// ============================================
+// ═══════════════════════════════════════════════════════
+// مثال الاستخدام
+// ═══════════════════════════════════════════════════════
 
 /*
 
-// في main.dart أو أي مكان تحتاجه:
+import 'services/remote_feature_control.dart';
 
-class MyApp extends StatefulWidget {
+// في أي مكان في التطبيق:
+class MyHomePage extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyHomePageState extends State<MyHomePage> {
   Map<String, bool> features = {};
-  
+  bool loading = true;
+
   @override
   void initState() {
     super.initState();
-    loadFeatures();
+    _loadFeatures();
   }
-  
-  Future<void> loadFeatures() async {
+
+  Future<void> _loadFeatures() async {
     final f = await RemoteFeatureControl.getFeatures();
     setState(() {
       features = f;
+      loading = false;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: ListView(
-          children: [
-            // الغرف الصوتية - تظهر فقط إذا كانت مفعّلة
-            if (features['voiceRooms'] == true)
-              ListTile(
-                title: Text('الغرف الصوتية'),
-                onTap: () {
-                  // انتقل لصفحة الغرف الصوتية
-                },
-              ),
-            
-            // القبائل - تظهر فقط إذا كانت مفعّلة
-            if (features['tribes'] == true)
-              ListTile(
-                title: Text('القبائل'),
-                onTap: () {
-                  // انتقل لصفحة القبائل
-                },
-              ),
-            
-            // أذكاري
-            if (features['adhkar'] == true)
-              ListTile(
-                title: Text('أذكاري'),
-                onTap: () {
-                  // انتقل لصفحة الأذكار
-                },
-              ),
-            
-            // الاختبارات
-            if (features['quizzes'] == true)
-              ListTile(
-                title: Text('الاختبارات'),
-                onTap: () {
-                  // انتقل لصفحة الاختبارات
-                },
-              ),
-          ],
-        ),
-      ),
+    if (loading) {
+      return CircularProgressIndicator();
+    }
+
+    return Column(
+      children: [
+        // الغرف الصوتية
+        if (features['voiceRooms'] == true)
+          ListTile(
+            title: Text('الغرف الصوتية'),
+            onTap: () {
+              // انتقل للغرف الصوتية
+            },
+          ),
+
+        // القبائل
+        if (features['tribes'] == true)
+          ListTile(
+            title: Text('القبائل'),
+            onTap: () {
+              // انتقل للقبائل
+            },
+          ),
+
+        // أذكاري
+        if (features['adhkar'] == true)
+          ListTile(
+            title: Text('أذكاري'),
+            onTap: () {
+              // انتقل للأذكار
+            },
+          ),
+
+        // الاختبارات
+        if (features['quizzes'] == true)
+          ListTile(
+            title: Text('الاختبارات'),
+            onTap: () {
+              // انتقل للاختبارات
+            },
+          ),
+      ],
     );
   }
 }
 
-// ============================================
-// أو استخدم هذه الطريقة الأبسط:
-// ============================================
-
-// في أي صفحة:
-FutureBuilder<bool>(
-  future: RemoteFeatureControl.isFeatureEnabled('voiceRooms'),
-  builder: (context, snapshot) {
-    if (snapshot.data == true) {
-      return VoiceRoomsSection();
-    }
-    return SizedBox.shrink(); // لا تظهر شيء
-  },
-)
+// أو استخدام مباشر:
+final isVoiceRoomsEnabled = await RemoteFeatureControl.isFeatureEnabled('voiceRooms');
+if (isVoiceRoomsEnabled) {
+  // أظهر الغرف الصوتية
+}
 
 */
