@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - إدارة أقسام التطبيق</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .login-section,
+        .control-section {
+            display: none;
+        }
+
+        .login-section.active,
+        .control-section.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .feature-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .feature-item:hover {
+            background: #e9ecef;
+        }
+
+        .feature-info h3 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+
+        .feature-info p {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #4CAF50;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(-30px);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .last-update {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .save-btn {
+            margin-top: 30px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .logout-btn {
+            margin-top: 10px;
+            background: #f44336;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .feature-info h3 {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Login Section -->
+        <div class="login-section active" id="loginSection">
+            <h1>🔐 تسجيل الدخول</h1>
+            <p class="subtitle">أدخل كلمة السر للوصول إلى لوحة التحكم</p>
+
+            <div class="message" id="loginMessage"></div>
+
+            <div class="input-group">
+                <label for="password">كلمة السر</label>
+                <input type="password" id="password" placeholder="أدخل كلمة السر">
+            </div>
+
+            <button onclick="login()">دخول</button>
+        </div>
+
+        <!-- Control Section -->
+        <div class="control-section" id="controlSection">
+            <h1>⚙️ إدارة أقسام التطبيق</h1>
+            <p class="subtitle">تفعيل أو إيقاف الأقسام من هنا</p>
+
+            <div class="message" id="controlMessage"></div>
+
+            <div id="featuresContainer"></div>
+
+            <button class="save-btn" onclick="saveChanges()">💾 حفظ التغييرات</button>
+            <button class="logout-btn" onclick="logout()">خروج</button>
+
+            <div class="last-update" id="lastUpdate"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentPassword = '';
+        let features = {};
+
+        const featureNames = {
+            voiceRooms: { name: 'الغرف الصوتية', desc: 'غرف المحادثة الصوتية' },
+            tribes: { name: 'القبائل', desc: 'نظام القبائل والمنافسات' },
+            adhkar: { name: 'أذكاري', desc: 'قسم الأذكار والأدعية' },
+            quizzes: { name: 'الاختبارات', desc: 'الاختبارات والمسابقات' }
+        };
+
+        async function login() {
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('loginMessage');
+
+            if (!password) {
+                showMessage(message, 'الرجاء إدخال كلمة السر', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/update-features', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password, features: {} })
+                });
+
+                if (response.ok) {
+                    currentPassword = password;
+                    await loadFeatures();
+                    document.getElementById('loginSection').classList.remove('active');
+                    document.getElementById('controlSection').classList.add('active');
+                } else {
+                    showMessage(message, 'كلمة السر غير صحيحة', 'error');
+                }
+            } catch (error) {
+                showMessage(message, 'خطأ في الاتصال بالسيرفر', 'error');
+            }
+        }
+
+        async function loadFeatures() {
+            try {
+                const response = await fetch('/api/get-features');
+                const data = await response.json();
+                features = data.features;
+
+                if (data.lastUpdated) {
+                    document.getElementById('lastUpdate').textContent =
+                        'آخر تحديث: ' + new Date(data.lastUpdated).toLocaleString('ar');
+                }
+
+                renderFeatures();
+            } catch (error) {
+                console.error('Error loading features:', error);
+            }
+        }
+
+        function renderFeatures() {
+            const container = document.getElementById('featuresContainer');
+            container.innerHTML = '';
+
+            for (const [key, value] of Object.entries(features)) {
+                const info = featureNames[key] || { name: key, desc: '' };
+                const isActive = value;
+
+                const featureItem = document.createElement('div');
+                featureItem.className = 'feature-item';
+                featureItem.innerHTML = `
+                    <div class="feature-info">
+                        <h3>
+                            <span class="status ${isActive ? 'active' : 'inactive'}">
+                                ${isActive ? '✓ مفعّل' : '✕ معطّل'}
+                            </span>
+                            ${info.name}
+                        </h3>
+                        <p>${info.desc}</p>
+                    </div>
+                    <div class="toggle-switch ${isActive ? 'active' : ''}" 
+                         onclick="toggleFeature('${key}')">
+                    </div>
+                `;
+                container.appendChild(featureItem);
+            }
+        }
+
+        function toggleFeature(key) {
+            features[key] = !features[key];
+            renderFeatures();
+        }
+
+        async function saveChanges() {
+            const message = document.getElementById('controlMessage');
+
+            try {
+                const response = await fetch('/api/update-features', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        password: currentPassword,
+                        features
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage(message, '✓ تم حفظ التغييرات بنجاح!', 'success');
+                    await loadFeatures();
+                } else {
+                    showMessage(message, data.error || 'فشل حفظ التغييرات', 'error');
+                }
+            } catch (error) {
+                showMessage(message, 'خطأ في الاتصال بالسيرفر', 'error');
+            }
+        }
+
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.className = `message ${type} show`;
+            setTimeout(() => {
+                element.classList.remove('show');
+            }, 3000);
+        }
+
+        function logout() {
+            currentPassword = '';
+            document.getElementById('password').value = '';
+            document.getElementById('controlSection').classList.remove('active');
+            document.getElementById('loginSection').classList.add('active');
+        }
+
+        // Allow Enter key to login
+        document.getElementById('password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') login();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+{
+    "password": "admin123",
+    "features": {
+        "voiceRooms": true,
+        "tribes": true,
+        "adhkar": true,
+        "quizzes": true
+    },
+    "lastUpdated": "2026-02-02T19:52:36+03:00"
+}
