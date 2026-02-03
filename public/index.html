@@ -283,19 +283,31 @@
                     return;
                 }
 
-                // Fallback to API if no localStorage data
-                const response = await fetch('/api/get-features');
-                const data = await response.json();
-                features = data.features;
-
-                if (data.lastUpdated) {
-                    document.getElementById('lastUpdate').textContent =
-                        'آخر تحديث: ' + new Date(data.lastUpdated).toLocaleString('ar');
+                // تحميل من features.json مباشرة (Vercel compatible)
+                const response = await fetch('./features.json');
+                if (response.ok) {
+                    features = await response.json();
+                } else {
+                    // قيم افتراضية في حالة الفشل
+                    features = {
+                        voiceRooms: true,
+                        tribes: true,
+                        adhkar: true,
+                        quizzes: true
+                    };
                 }
 
                 renderFeatures();
             } catch (error) {
                 console.error('Error loading features:', error);
+                // قيم افتراضية في حالة الخطأ
+                features = {
+                    voiceRooms: true,
+                    tribes: true,
+                    adhkar: true,
+                    quizzes: true
+                };
+                renderFeatures();
             }
         }
 
